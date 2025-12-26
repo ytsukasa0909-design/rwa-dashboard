@@ -1,0 +1,537 @@
+<!-- 入力とスライダーを両方用意し、連動させる -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RWA融資リスク指標ダッシュボード</title>
+  <link rel="stylesheet" href="./rwa_.css">
+  <style>
+    .dashboard-navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #1d2f3a;
+      padding: 12px 24px;
+      margin-bottom: 10px;
+      border-radius: 7px;
+      box-shadow: 0 2px 10px 0 rgba(32,44,61,0.06);
+    }
+    .dashboard-navbar-title {
+      color: #ffd38a;
+      font-weight: bold;
+      font-size: 23px;
+      margin: 0 15px 0 0;
+      letter-spacing: 1px;
+    }
+    .dashboard-navbar-metrics {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+    .dashboard-navbar-metric {
+      font-size: 15px;
+      color: #fff;
+      background: #263b47;
+      border-radius: 5px;
+      padding: 7px 20px 7px 20px;
+      display: flex;
+      align-items: center;
+      min-width: 120px;
+      justify-content: center;
+      position: relative;
+      transition: box-shadow 0.1s;
+      cursor: help;
+    }
+    .dashboard-navbar-metric-label {
+      color: #ffd38a;
+      font-size: 15px;
+      font-weight: bold;
+      margin-right: 8px;
+      margin-left: 0;
+      position: relative;
+      padding-bottom: 1px;
+    }
+    .dashboard-navbar-metric-label::after {
+      content: none !important;
+      display: none !important;
+    }
+    .dashboard-navbar-metric-value {
+      color: #ffae34;
+      font-size: 18px;
+      font-family: inherit;
+      font-weight: 600;
+      min-width: 40px;
+      text-align: right;
+    }
+    .dashboard-navbar-metric-unit {
+      color: #b2bdc8;
+      font-size: 13px;
+      margin-left: 4px;
+    }
+
+    /* ツールチップスタイル */
+    .navbar-tooltip {
+      visibility: hidden;
+      opacity: 0;
+      width: max-content;
+      max-width: 240px;
+      background-color: #283441;
+      color: #ffd38a;
+      text-align: left;
+      border-radius: 6px;
+      padding: 7px 14px;
+      position: absolute;
+      z-index: 1000;
+      left: 50%;
+      top: 130%;
+      transform: translateX(-50%);
+      font-size: 13px;
+      line-height: 1.5;
+      pointer-events: none;
+      box-shadow: 0 4px 18px 0 rgba(20,30,45,0.23);
+      transition: visibility 0s, opacity 0.19s;
+      white-space: pre-line;
+    }
+    .dashboard-navbar-metric:hover .navbar-tooltip,
+    .dashboard-navbar-metric:focus-within .navbar-tooltip {
+      visibility: visible;
+      opacity: 1;
+      transition-delay: 0.1s;
+      pointer-events: auto;
+    }
+
+    /* スライダーさらに細く・小さく */
+    .dashboard-input-group .dashboard-range {
+      width: 88px;
+      max-width: 32vw;
+      height: 9px;
+      margin-right: 2.5px;
+      accent-color: #ffae34;
+    }
+    .dashboard-range::-webkit-slider-thumb {
+      width: 12px;
+      height: 12px;
+    }
+    .dashboard-range::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+    }
+    .dashboard-range::-ms-thumb {
+      width: 12px;
+      height: 12px;
+    }
+    /* スライダーtrack（バー）を細く */
+    .dashboard-range::-webkit-slider-runnable-track {
+      height: 4px;
+    }
+    .dashboard-range::-moz-range-track {
+      height: 4px;
+    }
+    .dashboard-range::-ms-fill-lower,
+    .dashboard-range::-ms-fill-upper {
+      height: 4px;
+    }
+    /* 入力欄を横長くして全部の数値が見えるように */
+    .dashboard-number-input {
+      width: 70px;
+      min-width: 0;
+      font-size: 14px;
+      padding: 2px 6px;
+      margin-right: 3px;
+      height: 22px;
+      box-sizing: border-box;
+    }
+    .dashboard-value {
+      font-size: 12px;
+    }
+    @media (max-width: 600px) {
+      .dashboard-navbar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 9px 4px;
+      }
+      .dashboard-navbar-metrics {
+        justify-content: flex-start;
+        gap: 10px;
+        margin-top: 7px;
+        flex-wrap: wrap;
+      }
+      .dashboard-navbar-metric {
+        min-width: 95px;
+        font-size: 13px;
+        padding: 6px 8px 6px 8px;
+      }
+      .dashboard-navbar-title {
+        font-size: 17px;
+        margin-bottom: 4px;
+      }
+      .dashboard-navbar-metric-label {
+        font-size: 12px;
+        margin-right: 6px;
+        padding-bottom: 0;
+      }
+      .dashboard-navbar-metric-label::after {
+        content: none !important;
+        display: none !important;
+      }
+      .dashboard-navbar-metric-value {
+        font-size: 14px;
+      }
+      .dashboard-navbar-metric-unit {
+        font-size: 10px;
+      }
+      .navbar-tooltip {
+        font-size: 11px;
+        max-width: 97vw;
+        padding: 7px 8px;
+      }
+      /* 入力幅もっと長くする（スマホ） */
+      .dashboard-input-group .dashboard-range {
+        width: 62px;
+        max-width: 48vw;
+        height: 7px;
+        margin-right: 2px;
+      }
+      .dashboard-range::-webkit-slider-thumb,
+      .dashboard-range::-moz-range-thumb,
+      .dashboard-range::-ms-thumb {
+        width: 8px;
+        height: 8px;
+      }
+      .dashboard-range::-webkit-slider-runnable-track,
+      .dashboard-range::-moz-range-track,
+      .dashboard-range::-ms-fill-lower,
+      .dashboard-range::-ms-fill-upper {
+        height: 3px;
+      }
+      .dashboard-number-input {
+        width: 54px;
+        font-size: 13px;
+        padding: 1px 3px;
+        margin-right: 2px;
+        height: 16px;
+      }
+      .dashboard-value {
+        font-size: 11px;
+      }
+    }
+    /* ナビバーの？マーク（疑問符アイコン）非表示→元々?要素は無いが念のために消す */
+    .dashboard-navbar-metric-label::after,
+    .dashboard-navbar-metric-label::before {
+      content: none !important;
+      display: none !important;
+    }
+    /* ナビバーで疑問符マークを表示するCSSがもし別で指定されても消す */
+    .dashboard-navbar-metric .navbar-question-mark {
+      display: none !important;
+    }
+
+    /* 入力欄で数値が見切れない工夫 */
+    .dashboard-number-input::-webkit-input-placeholder { color: #999; }
+    .dashboard-number-input::-moz-placeholder { color: #999; }
+    .dashboard-number-input:-ms-input-placeholder { color: #999; }
+    .dashboard-number-input::placeholder { color: #999; }
+    .dashboard-number-input {
+      text-align: right;
+    }
+
+  </style>
+</head>
+<body>
+<div id="rwa-dashboard">
+  <!-- ナビバー -->
+  <nav class="dashboard-navbar">
+    <div class="dashboard-navbar-title">RWA融資リスク指標ダッシュボード</div>
+    <div class="dashboard-navbar-metrics">
+      <div class="dashboard-navbar-metric" style="position:relative;" tabindex="0">
+        <span class="dashboard-navbar-metric-label">Duration</span>
+        <!-- ?アイコンなし（消した） -->
+        <div class="navbar-tooltip">
+          デュレーション（Duration）は、債権やローンなどの資産価格が金利変動にどれくらい敏感かを示す指標です。<br>
+          数値が大きいほど、金利変動による債権価値の変動幅が大きくなります。（本ダッシュボードではMacaulay Durationを月単位で表示）
+        </div>
+        <span id="navbar-durationVal" class="dashboard-navbar-metric-value">--</span>
+      </div>
+      <div class="dashboard-navbar-metric" style="position:relative;" tabindex="0">
+        <span class="dashboard-navbar-metric-label">Convexity</span>
+        <!-- ?アイコンなし（消した） -->
+        <div class="navbar-tooltip">
+          コンベクシティ（Convexity）は、債権の金利感応度（デュレーション）の変化度合いを表す指標です。<br>
+          値が大きいほど、金利変動時の債権価値変動の非線形性が高く、リスク緩和効果があります。
+        </div>
+        <span id="navbar-convexityVal" class="dashboard-navbar-metric-value">--</span>
+      </div>
+    </div>
+  </nav>
+  <h2 class="dashboard-title" style="display: none">RWA融資リスク指標ダッシュボード</h2>
+
+  <!-- 融資額　-->
+  <div class="dashboard-input-group">
+    <div class="dashboard-label-row">
+      <label for="principalRange" class="dashboard-label">融資額 (万円):</label>
+    </div>
+    <input type="range" id="principalRange" min="100" max="10000" step="10" value="1000" class="dashboard-range">
+    <input type="number" id="principalInput" min="100" max="10000" step="10" value="1000" class="dashboard-number-input" />
+    <span id="principalVal" class="dashboard-value">1000</span>
+  </div>
+
+  <!-- 年利 -->
+  <div class="dashboard-input-group">
+    <div class="dashboard-label-row">
+      <label for="yieldRange" class="dashboard-label">年利 (%):</label>
+    </div>
+    <input type="range" id="yieldRange" min="0.1" max="20" step="0.1" value="5.0" class="dashboard-range">
+    <input type="number" id="yieldInput" min="0.1" max="20" step="0.1" value="5.0" class="dashboard-number-input" />
+    <span id="yieldVal" class="dashboard-value">5.0</span>
+  </div>
+
+  <!-- 期間(月) -->
+  <div class="dashboard-input-group">
+    <div class="dashboard-label-row">
+      <label for="termRange" class="dashboard-label">期間 (月):</label>
+    </div>
+    <input type="range" id="termRange" min="6" max="120" step="1" value="36" class="dashboard-range">
+    <input type="number" id="termInput" min="6" max="120" step="1" value="36" class="dashboard-number-input" />
+    <span id="termVal" class="dashboard-value">36</span>
+  </div>
+
+  <div class="dashboard-stats-grid">
+    <div class="dashboard-stats-box">
+      <div class="dashboard-stats-label">Duration<br><span class="dashboard-stats-sublabel">(Macaulay)</span></div>
+      <div id="durationVal" class="dashboard-stats-value">--</div>
+      <div class="dashboard-stats-unit">(月)</div>
+    </div>
+    <div class="dashboard-stats-box">
+      <div class="dashboard-stats-label">Convexity</div>
+      <div id="convexityVal" class="dashboard-stats-value">--</div>
+      <div class="dashboard-stats-unit">(年^-2)</div>
+    </div>
+  </div>
+
+  <div class="dashboard-chart-wrapper">
+    <canvas id="bondValueChart" height="110"></canvas>
+    <div class="dashboard-chart-caption">
+      金利±3%変動時の債権価値
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+function getInputs() {
+  const principalElem = document.getElementById('principalRange');
+  const yieldElem = document.getElementById('yieldRange');
+  const termElem = document.getElementById('termRange');
+  return {
+    principal: principalElem ? Number(principalElem.value) : 0, // in 万円
+    annualYield: yieldElem ? Number(yieldElem.value) / 100 : 0,
+    months: termElem ? Number(termElem.value) : 0
+  };
+}
+
+// 各月のキャッシュフロー生成（毎月元利均等返済と仮定）
+function monthlyPayment(principal, rate, n) {
+  if (n === 0) return 0;
+  const r = rate / 12;
+  if (r === 0) return principal / n * 10000;
+  return principal * 10000 * r / (1 - Math.pow(1 + r, -n)); // 万円を円に変換
+}
+
+function cashFlows(principal, rate, n) {
+  if (n <= 0) return [];
+  const pmt = monthlyPayment(principal, rate, n);
+  let flows = Array(n).fill(pmt);
+  return flows;
+}
+
+// Macaulay Duration (in months)
+function macaulayDuration(principal, rate, n, y) {
+  if (n <= 0) return 0;
+  const flows = cashFlows(principal, rate, n);
+  const y_m = y / 12; // 月利
+  let pvTotal = 0, weighted = 0;
+  for (let t = 1; t <= n; ++t) {
+    const pv = flows[t-1] / Math.pow(1 + y_m, t);
+    pvTotal += pv;
+    weighted += pv * t;
+  }
+  return pvTotal === 0 ? 0 : weighted / pvTotal;
+}
+
+// Convexity (per year^2)
+function convexity(principal, rate, n, y) {
+  if (n <= 0) return 0;
+  const flows = cashFlows(principal, rate, n);
+  const y_m = y / 12;
+  let pvTotal = 0, sum = 0;
+  for (let t = 1; t <= n; ++t) {
+    const pv = flows[t-1] / Math.pow(1 + y_m, t);
+    pvTotal += pv;
+    sum += pv * t * (t + 1);
+  }
+  // 年率に直す (t:月数 → 年)
+  return pvTotal === 0 ? 0 : sum / (pvTotal * Math.pow(12,2) * Math.pow(1 + y_m,2));
+}
+
+function bondValue(principal, rate, n, y) {
+  if (n <= 0) return 0;
+  const flows = cashFlows(principal, rate, n);
+  const y_m = y / 12;
+  let pv = 0;
+  for (let t = 1; t <= n; ++t) {
+    pv += flows[t-1] / Math.pow(1 + y_m, t);
+  }
+  return pv;
+}
+
+function updateValuesAndChart() {
+  const { principal, annualYield, months } = getInputs();
+  // Null guard
+  if (!principal || !annualYield || !months) return;
+
+  // 値セット
+  const principalValElem = document.getElementById('principalVal');
+  if (principalValElem) principalValElem.textContent = principal;
+
+  const yieldValElem = document.getElementById('yieldVal');
+  if (yieldValElem) yieldValElem.textContent = (annualYield * 100).toFixed(2);
+
+  const termValElem = document.getElementById('termVal');
+  if (termValElem) termValElem.textContent = months;
+
+  const dur = macaulayDuration(principal, annualYield, months, annualYield);
+  const conv = convexity(principal, annualYield, months, annualYield);
+
+  const durationValElem = document.getElementById('durationVal');
+  if (durationValElem) durationValElem.textContent = isFinite(dur) ? dur.toFixed(2) : "--";
+  const convexityValElem = document.getElementById('convexityVal');
+  if (convexityValElem) convexityValElem.textContent = isFinite(conv) ? conv.toFixed(4) : "--";
+
+  // ナビバー上部にも値反映
+  const navbarDurationValElem = document.getElementById('navbar-durationVal');
+  if (navbarDurationValElem) navbarDurationValElem.textContent = isFinite(dur) ? dur.toFixed(2) : "--";
+  const navbarConvexityValElem = document.getElementById('navbar-convexityVal');
+  if (navbarConvexityValElem) navbarConvexityValElem.textContent = isFinite(conv) ? conv.toFixed(4) : "--";
+
+  // Chart Update
+  if (typeof bondValueChart !== "undefined" && bondValueChart) {
+    const chartMin = Math.max(annualYield - 0.03, 0.0001);
+    const chartMax = annualYield + 0.03;
+    const pts = [];
+    const labels = [];
+    for (let i = 0; i <= 12; ++i) {
+      const y = chartMin + (chartMax - chartMin) * i / 12;
+      pts.push(bondValue(principal, annualYield, months, y) / 10000); // 万円に戻す
+      labels.push(((y*100).toFixed(2)) + "%");
+    }
+    bondValueChart.data.labels = labels;
+    bondValueChart.data.datasets[0].data = pts;
+    if (bondValueChart.options.scales && bondValueChart.options.scales.y) {
+      bondValueChart.options.scales.y.suggestedMin = Math.min(...pts) * 0.95;
+      bondValueChart.options.scales.y.suggestedMax = Math.max(...pts) * 1.05;
+    }
+    bondValueChart.update();
+  }
+}
+
+// 入力とスライダーの連携ロジック
+function synchronizeInputs() {
+  const principalRange = document.getElementById('principalRange');
+  const principalInput = document.getElementById('principalInput');
+  const yieldRange = document.getElementById('yieldRange');
+  const yieldInput = document.getElementById('yieldInput');
+  const termRange = document.getElementById('termRange');
+  const termInput = document.getElementById('termInput');
+
+  if (principalRange && principalInput) {
+    principalRange.addEventListener('input', function() {
+      principalInput.value = principalRange.value;
+      updateValuesAndChart();
+    });
+    principalInput.addEventListener('input', function() {
+      // 範囲外の時自動補正
+      let v = parseInt(principalInput.value);
+      v = Math.max(parseInt(principalRange.min), Math.min(parseInt(principalRange.max), isNaN(v) ? 0 : v));
+      principalRange.value = v;
+      principalInput.value = v;
+      updateValuesAndChart();
+    });
+  }
+
+  if (yieldRange && yieldInput) {
+    yieldRange.addEventListener('input', function() {
+      yieldInput.value = yieldRange.value;
+      updateValuesAndChart();
+    });
+    yieldInput.addEventListener('input', function() {
+      let v = parseFloat(yieldInput.value);
+      v = Math.max(parseFloat(yieldRange.min), Math.min(parseFloat(yieldRange.max), isNaN(v) ? 0 : v));
+      // 小数第2位で丸め
+      v = Number(v.toFixed(2));
+      yieldRange.value = v;
+      yieldInput.value = v;
+      updateValuesAndChart();
+    });
+  }
+
+  if (termRange && termInput) {
+    termRange.addEventListener('input', function() {
+      termInput.value = termRange.value;
+      updateValuesAndChart();
+    });
+    termInput.addEventListener('input', function() {
+      let v = parseInt(termInput.value);
+      v = Math.max(parseInt(termRange.min), Math.min(parseInt(termRange.max), isNaN(v) ? 0 : v));
+      termRange.value = v;
+      termInput.value = v;
+      updateValuesAndChart();
+    });
+  }
+}
+
+// Chart.js Initialization
+let bondValueChart;
+window.addEventListener('DOMContentLoaded', function() {
+  const chartElem = document.getElementById('bondValueChart');
+  if (!chartElem) return;
+  const ctx = chartElem.getContext('2d');
+  if (!ctx || typeof Chart === "undefined") return;
+  bondValueChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: '債権価値 (万円)',
+        data: [],
+        fill: true,
+        backgroundColor: "rgba(255,174,52,0.14)",
+        borderColor: "#ffae34",
+        tension: 0.25,
+        pointRadius: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false }},
+      scales: {
+        x: {
+          display: true,
+          title: { display: true, text: '金利 (%)', color: "#ffd38a", font: {weight:'bold',size:12}},
+          ticks: { color: "#eee", font: {size:13}}
+        },
+        y: {
+          display: true,
+          title: { display: true, text: '債権価値 (万円)', color: "#ffd38a", font:{weight:"bold",size:13}},
+          ticks: { color: "#ffd38a", font: {size:13}}
+        }
+      }
+    }
+  });
+
+  // バインド
+  synchronizeInputs();
+  updateValuesAndChart();
+});
+</script>
+</body>
+</html>

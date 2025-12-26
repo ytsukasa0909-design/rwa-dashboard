@@ -1,0 +1,29 @@
+{
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.4.0",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
+    "ethers": "^6.16.0",
+    "express": "^5.2.1",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.0.2",
+    "process": "^0.11.10"
+  },
+  "name": "rwa-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "rpc-test.js",
+  "devDependencies": {
+    "@types/node": "^22.19.3",
+    "hardhat": "^3.1.0",
+    "typescript": "~5.8.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}

@@ -1,0 +1,285 @@
+/** RWA Platform - Cool Modern Styles **/
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #18191a;
+  color: #fff;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+header {
+  background: #242526;
+  border-bottom: 1px solid #3a3b3c;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px 0 22px;
+}
+
+header .logo {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ffae34;
+  letter-spacing: 1px;
+}
+
+header .menu {
+  display: flex;
+  gap: 28px;
+  font-size: 0.98rem;
+  color: #b0b3b8;
+  /* 各メニューボタンの動きをなめらかに */
+  user-select: none;
+}
+
+header .menu .menu-item {
+  position: relative;
+  padding: 6px 14px 6px 14px;
+  cursor: pointer;
+  transition: 
+    color 0.19s cubic-bezier(.4,0,.2,1), 
+    text-shadow 0.2s cubic-bezier(.4,0,.2,1), 
+    background 0.18s,
+    box-shadow 0.19s cubic-bezier(.32,1,.52,1.13),
+    transform 0.17s cubic-bezier(.26,1,.48,1.19);
+  border-radius: 7px; 
+  outline: none;
+}
+
+header .menu .menu-item:active {
+  transform: scale(0.97);
+  background: #2e220e;
+  color: #ffae34;
+  box-shadow: 0 0 0 2px #ffae3426;
+}
+
+header .menu .menu-item:hover,
+header .menu .menu-item.active {
+  color: #fffbe7;
+  background: linear-gradient(90deg, #ffae34b5 0%, #d49635b7 100%);
+  text-shadow: 0 2px 10px #ffae34aa, 0 0px 32px #fffbe555;
+  box-shadow: 0 3px 18px #ffae3433;
+  /* 下にラインアニメーション（擬似要素で） */
+}
+
+header .menu .menu-item:hover {
+  /* hover時、光る縁取りと柔らかい色でアクセント+明るい文字へ */
+  border-radius: 11px;
+  filter: brightness(1.05) saturate(1.18);
+  /* さらに光彩演出のためbox-shadowも追加 */
+  box-shadow: 0 2px 16px 3px #ffbf364d, 0 2px 4px #ffae3440;
+}
+
+header .menu .menu-item::after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  bottom: 1.7px;
+  height: 3.2px;
+  border-radius: 2.2px;
+  background: linear-gradient(90deg, #ffdc87 0%, #ffae34 75%, #f5c862 100%);
+  box-shadow: 0 1px 8px #ffae3444;
+  opacity: 0;
+  transform: scaleX(0.55);
+  transition:
+    opacity 0.20s cubic-bezier(.46,0,.2,1),
+    transform 0.27s cubic-bezier(.34,.9,.65,1.27);
+  pointer-events: none;
+  z-index: 2;
+}
+
+header .menu .menu-item:hover::after,
+header .menu .menu-item.active::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+header .menu .menu-item:focus-visible {
+  outline: 2.2px solid #ffdc8799;
+  outline-offset: 1.5px;
+  box-shadow: 0 0 3px 1px #ffeaab65;
+  background: #232112;
+  color: #ffae34;
+}
+
+/* ------------------------------ */
+
+main {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.left-panel {
+  flex: 2;
+  min-width: 300px;
+}
+
+.right-panel {
+  flex: 1;
+  min-width: 300px;
+  background: #242526;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid #3a3b3c;
+  height: fit-content;
+  box-shadow: 0 0 18px #0008;
+}
+
+.price-main {
+  margin-bottom: 20px;
+}
+.price-main h1 {
+  margin: 0;
+  font-size: 2.7rem;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, #ffae34, #fffbe5 60%);
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+.price-main .price-diff {
+  color: #4caf50;
+  font-size: 1.12rem;
+  margin-left: 1em;
+}
+
+.chart-box {
+  height: 200px;
+  margin-bottom: 40px;
+  background: linear-gradient(120deg, #1d1408 60%, #222 100%);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px #0003;
+  padding-top: 20px;
+  padding-bottom: 10px;
+  position: relative;
+  /* カーソル: crosshair追加済みだが、ツールチップは非表示にする */
+  cursor: crosshair;
+}
+
+/* 左上チャートのツールチップを非表示にして消す */
+.chart-tooltip {
+  display: none !important;
+}
+
+.stats-row {
+  display: flex;
+  gap: 28px;
+  margin-bottom: 30px;
+}
+.stat-item {
+  flex: 1;
+  background: #232425;
+  border-radius: 8px;
+  padding: 14px 9px;
+  text-align: center;
+  color: #ffae34;
+  font-weight: 700;
+  box-shadow: 0 2px 8px #0002;
+  border: 1px solid #343538;
+  font-size: 1.08rem;
+}
+
+.swap-box h3 {
+  margin-top: 0;
+  font-size: 1.3rem;
+  color: #ffae34;
+  letter-spacing: 1px;
+}
+
+.swap-label {
+  display: block;
+  color: #b0b3b8;
+  margin-bottom: 5px;
+  font-size: 0.92rem;
+}
+
+.swap-input,
+.swap-result {
+  width: 100%;
+  background: #18191a;
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 1.14rem;
+  margin-bottom: 6px;
+  box-sizing: border-box;
+}
+
+.swap-input:focus {
+  outline: 2px solid #ffae34cc;
+}
+
+select {
+  background: #2c2d2e;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 1em;
+  width: 100%;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: border 0.16s;
+}
+select:focus {
+  border-color: #ffae3490;
+  outline: none;
+}
+
+.swap-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(92deg, #ffae34, #ffd38a 110%);
+  border: none;
+  border-radius: 12px;
+  font-size: 1.11rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: #000;
+  margin-top: 10px;
+  box-shadow: 0 2px 12px #ffae3440;
+  transition: background 0.18s, transform 0.15s;
+}
+.swap-btn:hover {
+  background: linear-gradient(92deg, #ffc370 0%, #ffae34 100%);
+  transform: translateY(-2px) scale(1.01);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #1a1a1a;
+}
+::-webkit-scrollbar-thumb {
+  background: #232426;
+  border-radius: 6px;
+}
+
+@media (max-width: 900px) {
+  main {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .left-panel,
+  .right-panel {
+    min-width: 0;
+    width: 100%;
+  }
+}
+@media (max-width: 600px) {
+  header {
+    flex-direction: column;
+    padding: 12px 8px;
+  }
+  main {
+    padding: 0 5px;
+  }
+}
